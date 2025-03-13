@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis - ApplicantAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .result-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #6f42c1, #007bff);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .section-card {
+            border-left: 4px solid #6f42c1;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+        .badge-quality {
+            font-size: 1rem;
+            padding: 0.5rem 0.75rem;
+        }
+        .section-content {
+            white-space: pre-line;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .bullet-point {
+            margin-bottom: 0.5rem;
+        }
+        .quality-gauge {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .quality-gauge canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .quality-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container result-container">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h1 class="display-5">Resume Analysis Results</h1>
+                <p class="lead text-muted">Powered by the PDF Alchemy Engine</p>
+            </div>
+        </div>
+        
+        <!-- Quality Score and Overview -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h4 mb-0">Resume Overview</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <h3 class="h5">Extraction Quality</h3>
+                        <div class="quality-gauge" th:data-quality="${extractionQuality}">
+                            <canvas id="qualityGauge" width="150" height="150"></canvas>
+                            <div class="quality-text">
+                                <span th:text="${extractionQuality}">85</span>%
+                            </div>
+                        </div>
+                        <p class="mt-2" th:text="${'Method: ' + extractionMethod}">Method: DIRECT</p>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="h5">Document Information</h3>
+                                <ul class="list-unstyled">
+                                    <li><strong>File Name:</strong> <span th:text="${resumeContent.originalFileName}">resume.pdf</span></li>
+                                    <li><strong>Size:</strong> <span th:text="${#numbers.formatDecimal(resumeContent.fileSize / 1024, 0, 2)} + ' KB'">128.5 KB</span></li>
+                                    <li><strong>Sections Found:</strong> <span th:text="${resumeContent.sections.size()}">5</span></li>
+                                    <li><strong>Bullet Points:</strong> <span th:text="${resumeContent.bulletPoints.size()}">12</span></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <div th:if="${warnings != null && !warnings.empty}" class="warning-box">
+                                    <h3 class="h5 text-warning">⚠️ Warnings</h3>
+                                    <ul class="mb-0">
+                                        <li th:each="warning : ${warnings}" th:text="${warning}">Warning message</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                            <a th:href="@{/resumes/upload}" class="btn btn-outline-primary">Upload Another Resume</a>
+                            <a href="#" class="btn btn-primary">Optimize Resume</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Extracted Content -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h4 mb-0">Extracted Content</h2>
+            </div>
+            <div class="card-body">
+                <!-- Sections -->
+                <h3 class="h5 mb-3">Identified Sections</h3>
+                <div th:if="${sections != null && !sections.empty}">
+                    <div class="section-card" th:each="section : ${sections}">
+                        <h4 class="h6 text-capitalize" th:text="${section.key}">Section Name</h4>
+                        <div class="section-content" th:text="${section.value}">Section content goes here...</div>
+                    </div>
+                </div>
+                <div th:if="${sections == null || sections.empty}" class="alert alert-warning">
+                    No sections were identified in this resume.
+                </div>
+                
+                <!-- Bullet Points -->
+                <h3 class="h5 mb-3 mt-4">Extracted Bullet Points</h3>
+                <div th:if="${bulletPoints != null && !bulletPoints.empty}">
+                    <ul class="list-group">
+                        <li class="list-group-item bullet-point" th:each="bullet : ${bulletPoints}" th:text="${bullet}">Bullet point text goes here...</li>
+                    </ul>
+                </div>
+                <div th:if="${bulletPoints == null || bulletPoints.empty}" class="alert alert-warning">
+                    No bullet points were extracted from this resume.
+                </div>
+                
+                <!-- Raw Text Preview -->
+                <div class="mt-4">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#rawTextPreview" aria-expanded="false" aria-controls="rawTextPreview">
+                        Show Raw Text
+                    </button>
+                    <div class="collapse mt-3" id="rawTextPreview">
+                        <div class="card card-body">
+                            <pre class="mb-0" style="max-height: 300px; overflow-y: auto;" th:text="${resumeContent.rawText}">Raw text content goes here...</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Next Steps -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="h4 mb-0">Next Steps</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3 mb-md-0">
+                        <div class="d-inline-block p-3 rounded-circle bg-light">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#6f42c1" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                                <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="h5 mt-3">Upload Job Description</h3>
+                        <p class="text-muted small">Compare your resume with a job posting to get a match score.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Upload Job</a>
+                    </div>
+                    <div class="col-md-4 text-center mb-3 mb-md-0">
+                        <div class="d-inline-block p-3 rounded-circle bg-light">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#007bff" class="bi bi-magic" viewBox="0 0 16 16">
+                                <path d="M9.5 2.672a.5.5 0 1 0 1 0V.843a.5.5 0 0 0-1 0v1.829Zm4.5.035A.5.5 0 0 0 13.293 2L12 3.293a.5.5 0 1 0 .707.707L14 2.707a.5.5 0 0 0-.207-.965Zm-10 10a.5.5 0 0 0 .5.5h1.829a.5.5 0 0 0 0-1H4.5a.5.5 0 0 0-.5.5Zm0-3a.5.5 0 0 0 .5.5h1.829a.5.5 0 0 0 0-1H4.5a.5.5 0 0 0-.5.5Zm0-3a.5.5 0 0 0 .5.5h1.829a.5.5 0 0 0 0-1H4.5a.5.5 0 0 0-.5.5Z"/>
+                                <path d="M15.854 2.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12 4.293l2.646-2.647a.5.5 0 0 1 .708 0Z"/>
+                            </svg>
+                        </div>
+                        <h3 class="h5 mt-3">Optimize for ATS</h3>
+                        <p class="text-muted small">Improve your resume's performance with applicant tracking systems.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Optimize Now</a>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="d-inline-block p-3 rounded-circle bg-light">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#20c997" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z"/>
+                            </svg>
+                        </div>
+                        <h3 class="h5 mt-3">Career Insights</h3>
+                        <p class="text-muted small">Get predictions about your career trajectory and potential.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View Insights</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Quality gauge rendering
+            const gaugeCanvas = document.getElementById('qualityGauge');
+            const ctx = gaugeCanvas.getContext('2d');
+            const quality = parseInt(document.querySelector('.quality-gauge').getAttribute('data-quality'));
+            
+            // Draw background circle
+            ctx.beginPath();
+            ctx.lineWidth = 15;
+            ctx.strokeStyle = '#e9ecef';
+            ctx.arc(75, 75, 60, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Draw quality arc
+            const startAngle = -0.5 * Math.PI;
+            const endAngle = startAngle + (quality / 100) * 2 * Math.PI;
+            
+            // Choose color based on quality score
+            let arcColor;
+            if (quality >= 80) {
+                arcColor = '#28a745'; // Green
+            } else if (quality >= 60) {
+                arcColor = '#17a2b8'; // Blue
+            } else if (quality >= 40) {
+                arcColor = '#ffc107'; // Yellow
+            } else {
+                arcColor = '#dc3545'; // Red
+            }
+            
+            ctx.beginPath();
+            ctx.lineWidth = 15;
+            ctx.strokeStyle = arcColor;
+            ctx.arc(75, 75, 60, startAngle, endAngle);
+            ctx.stroke();
+        });
+    </script>
+</body>
+</html> 

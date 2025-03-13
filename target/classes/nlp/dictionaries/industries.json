@@ -1,0 +1,157 @@
+{
+  "industries": [
+    {
+      "name": "Technology",
+      "aliases": ["Tech", "Information Technology", "IT", "Software", "Tech Industry"],
+      "subIndustries": ["Software Development", "IT Services", "Cybersecurity", "Cloud Computing", "Artificial Intelligence"]
+    },
+    {
+      "name": "Finance",
+      "aliases": ["Financial Services", "Banking", "FinTech"],
+      "subIndustries": ["Banking", "Investment Banking", "Insurance", "Financial Technology", "Asset Management"]
+    },
+    {
+      "name": "Healthcare",
+      "aliases": ["Health Care", "Medical", "Health Industry"],
+      "subIndustries": ["Hospitals", "Pharmaceuticals", "Medical Devices", "Health Insurance", "Biotechnology"]
+    },
+    {
+      "name": "Education",
+      "aliases": ["Educational Services", "Academic", "EdTech"],
+      "subIndustries": ["K-12 Education", "Higher Education", "Educational Technology", "Professional Training", "E-Learning"]
+    },
+    {
+      "name": "Retail",
+      "aliases": ["Retail Industry", "Retail Trade", "E-commerce"],
+      "subIndustries": ["E-commerce", "Brick and Mortar Retail", "Grocery", "Fashion", "Consumer Electronics"]
+    },
+    {
+      "name": "Manufacturing",
+      "aliases": ["Manufacturing Industry", "Production", "Industrial"],
+      "subIndustries": ["Automotive Manufacturing", "Electronics Manufacturing", "Food Processing", "Textile Manufacturing", "Chemical Manufacturing"]
+    },
+    {
+      "name": "Consulting",
+      "aliases": ["Consulting Services", "Professional Services", "Advisory"],
+      "subIndustries": ["Management Consulting", "IT Consulting", "Strategy Consulting", "HR Consulting", "Financial Advisory"]
+    },
+    {
+      "name": "Media",
+      "aliases": ["Media Industry", "Entertainment", "Digital Media"],
+      "subIndustries": ["Broadcasting", "Publishing", "Digital Media", "Social Media", "Advertising"]
+    },
+    {
+      "name": "Entertainment",
+      "aliases": ["Entertainment Industry", "Media and Entertainment"],
+      "subIndustries": ["Film Production", "Music", "Gaming", "Sports Entertainment", "Performing Arts"]
+    },
+    {
+      "name": "Government",
+      "aliases": ["Public Sector", "Government Services", "Public Administration"],
+      "subIndustries": ["Federal Government", "State Government", "Local Government", "Defense", "Public Safety"]
+    },
+    {
+      "name": "Non-Profit",
+      "aliases": ["Non-Profit Organizations", "NGO", "Charitable Organizations"],
+      "subIndustries": ["Charitable Organizations", "Foundations", "Social Services", "Environmental Organizations", "International Development"]
+    },
+    {
+      "name": "Telecommunications",
+      "aliases": ["Telecom", "Communications", "Telecommunications Industry"],
+      "subIndustries": ["Wireless Communications", "Internet Service Providers", "Network Infrastructure", "Satellite Communications", "Telecommunications Equipment"]
+    },
+    {
+      "name": "Automotive",
+      "aliases": ["Automotive Industry", "Auto Industry", "Car Industry"],
+      "subIndustries": ["Automobile Manufacturing", "Auto Parts Manufacturing", "Car Dealerships", "Automotive Technology", "Electric Vehicles"]
+    },
+    {
+      "name": "Aerospace",
+      "aliases": ["Aerospace Industry", "Aviation", "Space"],
+      "subIndustries": ["Aircraft Manufacturing", "Space Technology", "Defense Aerospace", "Aviation Services", "Satellite Technology"]
+    },
+    {
+      "name": "Energy",
+      "aliases": ["Energy Industry", "Power", "Utilities"],
+      "subIndustries": ["Oil and Gas", "Renewable Energy", "Nuclear Energy", "Utilities", "Energy Services"]
+    },
+    {
+      "name": "Pharmaceutical",
+      "aliases": ["Pharma", "Pharmaceutical Industry", "Drug Manufacturing"],
+      "subIndustries": ["Drug Manufacturing", "Research and Development", "Clinical Trials", "Pharmaceutical Sales", "Biotech"]
+    },
+    {
+      "name": "Insurance",
+      "aliases": ["Insurance Industry", "Insurance Services"],
+      "subIndustries": ["Life Insurance", "Health Insurance", "Property Insurance", "Casualty Insurance", "Reinsurance"]
+    },
+    {
+      "name": "Real Estate",
+      "aliases": ["Real Estate Industry", "Property", "Real Estate Services"],
+      "subIndustries": ["Residential Real Estate", "Commercial Real Estate", "Property Management", "Real Estate Development", "Real Estate Investment"]
+    },
+    {
+      "name": "Hospitality",
+      "aliases": ["Hospitality Industry", "Tourism", "Accommodation"],
+      "subIndustries": ["Hotels", "Restaurants", "Tourism", "Event Management", "Cruise Lines"]
+    },
+    {
+      "name": "Transportation",
+      "aliases": ["Transportation Industry", "Logistics", "Shipping"],
+      "subIndustries": ["Trucking", "Air Transportation", "Rail Transportation", "Maritime Transportation", "Logistics Services"]
+    }
+  ],
+  "jobLevels": [
+    {
+      "name": "Entry Level",
+      "aliases": ["Junior", "Entry-Level", "Beginner", "Trainee", "Associate"],
+      "yearsOfExperience": "0-2"
+    },
+    {
+      "name": "Mid Level",
+      "aliases": ["Intermediate", "Mid-Level", "Experienced", "Mid-Career"],
+      "yearsOfExperience": "3-5"
+    },
+    {
+      "name": "Senior Level",
+      "aliases": ["Senior", "Expert", "Advanced", "Lead"],
+      "yearsOfExperience": "6-10"
+    },
+    {
+      "name": "Management",
+      "aliases": ["Manager", "Director", "Team Lead", "Supervisor"],
+      "yearsOfExperience": "8+"
+    },
+    {
+      "name": "Executive",
+      "aliases": ["C-Level", "Executive Level", "VP", "Chief", "Head"],
+      "yearsOfExperience": "10+"
+    }
+  ],
+  "employmentTypes": [
+    {
+      "name": "Full-Time",
+      "aliases": ["Full Time", "Permanent", "Regular"]
+    },
+    {
+      "name": "Part-Time",
+      "aliases": ["Part Time", "Half-Time"]
+    },
+    {
+      "name": "Contract",
+      "aliases": ["Contractor", "Temporary", "Fixed Term"]
+    },
+    {
+      "name": "Freelance",
+      "aliases": ["Independent Contractor", "Self-Employed"]
+    },
+    {
+      "name": "Internship",
+      "aliases": ["Intern", "Trainee Program", "Student Position"]
+    },
+    {
+      "name": "Remote",
+      "aliases": ["Work from Home", "Telecommute", "Virtual"]
+    }
+  ]
+} 

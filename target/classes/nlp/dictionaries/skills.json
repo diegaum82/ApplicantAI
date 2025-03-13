@@ -1,0 +1,246 @@
+{
+  "programmingLanguages": [
+    {
+      "name": "Java",
+      "category": "Programming Language",
+      "aliases": ["Java Programming", "Core Java", "Java SE", "Java EE"],
+      "related": ["Spring", "Hibernate", "JUnit", "Maven"]
+    },
+    {
+      "name": "Python",
+      "category": "Programming Language",
+      "aliases": ["Python Programming", "Python Development"],
+      "related": ["Django", "Flask", "NumPy", "Pandas"]
+    },
+    {
+      "name": "JavaScript",
+      "category": "Programming Language",
+      "aliases": ["JS", "ECMAScript"],
+      "related": ["React", "Angular", "Vue", "Node.js"]
+    },
+    {
+      "name": "TypeScript",
+      "category": "Programming Language",
+      "aliases": ["TS"],
+      "related": ["Angular", "React", "Node.js"]
+    },
+    {
+      "name": "C++",
+      "category": "Programming Language",
+      "aliases": ["CPP", "C Plus Plus"],
+      "related": ["STL", "Boost", "Qt"]
+    },
+    {
+      "name": "C#",
+      "category": "Programming Language",
+      "aliases": ["CSharp", "C Sharp"],
+      "related": [".NET", "ASP.NET", "Entity Framework"]
+    },
+    {
+      "name": "Ruby",
+      "category": "Programming Language",
+      "aliases": ["Ruby Programming"],
+      "related": ["Ruby on Rails", "RSpec", "Sinatra"]
+    },
+    {
+      "name": "PHP",
+      "category": "Programming Language",
+      "aliases": ["PHP Programming"],
+      "related": ["Laravel", "Symfony", "WordPress"]
+    },
+    {
+      "name": "Swift",
+      "category": "Programming Language",
+      "aliases": ["Swift Programming"],
+      "related": ["iOS", "Xcode", "Cocoa Touch"]
+    },
+    {
+      "name": "Kotlin",
+      "category": "Programming Language",
+      "aliases": ["Kotlin Programming"],
+      "related": ["Android", "Spring Boot"]
+    }
+  ],
+  "frameworks": [
+    {
+      "name": "Spring",
+      "category": "Framework",
+      "aliases": ["Spring Framework"],
+      "related": ["Spring Boot", "Spring MVC", "Spring Security"]
+    },
+    {
+      "name": "React",
+      "category": "Framework",
+      "aliases": ["ReactJS", "React.js"],
+      "related": ["Redux", "React Router", "Next.js"]
+    },
+    {
+      "name": "Angular",
+      "category": "Framework",
+      "aliases": ["AngularJS", "Angular 2+"],
+      "related": ["TypeScript", "RxJS", "NgRx"]
+    },
+    {
+      "name": "Vue",
+      "category": "Framework",
+      "aliases": ["Vue.js", "VueJS"],
+      "related": ["Vuex", "Vue Router", "Nuxt.js"]
+    },
+    {
+      "name": "Django",
+      "category": "Framework",
+      "aliases": ["Django Framework"],
+      "related": ["Python", "Django REST Framework"]
+    },
+    {
+      "name": "Flask",
+      "category": "Framework",
+      "aliases": ["Flask Framework"],
+      "related": ["Python", "Jinja2", "SQLAlchemy"]
+    },
+    {
+      "name": "Express",
+      "category": "Framework",
+      "aliases": ["Express.js", "ExpressJS"],
+      "related": ["Node.js", "JavaScript", "MongoDB"]
+    },
+    {
+      "name": "Laravel",
+      "category": "Framework",
+      "aliases": ["Laravel Framework"],
+      "related": ["PHP", "Blade", "Eloquent"]
+    },
+    {
+      "name": "ASP.NET",
+      "category": "Framework",
+      "aliases": ["ASP.NET MVC", "ASP.NET Core"],
+      "related": ["C#", ".NET", "Entity Framework"]
+    },
+    {
+      "name": "Ruby on Rails",
+      "category": "Framework",
+      "aliases": ["Rails", "RoR"],
+      "related": ["Ruby", "ActiveRecord", "RSpec"]
+    }
+  ],
+  "databases": [
+    {
+      "name": "MySQL",
+      "category": "Database",
+      "aliases": ["MySQL Database"],
+      "related": ["SQL", "MariaDB", "InnoDB"]
+    },
+    {
+      "name": "PostgreSQL",
+      "category": "Database",
+      "aliases": ["Postgres"],
+      "related": ["SQL", "PostGIS", "PL/pgSQL"]
+    },
+    {
+      "name": "MongoDB",
+      "category": "Database",
+      "aliases": ["Mongo", "MongoDB Database"],
+      "related": ["NoSQL", "Document Database", "BSON"]
+    },
+    {
+      "name": "Oracle",
+      "category": "Database",
+      "aliases": ["Oracle Database", "Oracle DB"],
+      "related": ["SQL", "PL/SQL", "RDBMS"]
+    },
+    {
+      "name": "SQL Server",
+      "category": "Database",
+      "aliases": ["Microsoft SQL Server", "MSSQL"],
+      "related": ["SQL", "T-SQL", "RDBMS"]
+    },
+    {
+      "name": "Redis",
+      "category": "Database",
+      "aliases": ["Redis Database"],
+      "related": ["NoSQL", "In-memory Database", "Caching"]
+    },
+    {
+      "name": "Elasticsearch",
+      "category": "Database",
+      "aliases": ["Elastic Search", "ES"],
+      "related": ["Search Engine", "Lucene", "ELK Stack"]
+    }
+  ],
+  "cloud": [
+    {
+      "name": "AWS",
+      "category": "Cloud",
+      "aliases": ["Amazon Web Services", "Amazon AWS"],
+      "related": ["EC2", "S3", "Lambda", "CloudFormation"]
+    },
+    {
+      "name": "Azure",
+      "category": "Cloud",
+      "aliases": ["Microsoft Azure", "MS Azure"],
+      "related": ["Azure Functions", "Azure DevOps", "Azure AD"]
+    },
+    {
+      "name": "Google Cloud",
+      "category": "Cloud",
+      "aliases": ["GCP", "Google Cloud Platform"],
+      "related": ["GKE", "Cloud Functions", "BigQuery"]
+    },
+    {
+      "name": "Kubernetes",
+      "category": "DevOps",
+      "aliases": ["K8s"],
+      "related": ["Docker", "Container Orchestration", "Helm"]
+    },
+    {
+      "name": "Docker",
+      "category": "DevOps",
+      "aliases": ["Docker Containers"],
+      "related": ["Kubernetes", "Containerization", "Docker Compose"]
+    },
+    {
+      "name": "Terraform",
+      "category": "DevOps",
+      "aliases": ["Terraform IaC"],
+      "related": ["Infrastructure as Code", "HashiCorp", "Cloud Provisioning"]
+    }
+  ],
+  "softSkills": [
+    {
+      "name": "Leadership",
+      "category": "Soft Skill",
+      "aliases": ["Team Leadership", "Project Leadership"],
+      "related": ["Management", "Team Building", "Mentoring"]
+    },
+    {
+      "name": "Communication",
+      "category": "Soft Skill",
+      "aliases": ["Effective Communication", "Clear Communication"],
+      "related": ["Presentation Skills", "Writing Skills", "Listening Skills"]
+    },
+    {
+      "name": "Teamwork",
+      "category": "Soft Skill",
+      "aliases": ["Team Collaboration", "Collaborative Work"],
+      "related": ["Cooperation", "Team Player", "Collaboration"]
+    },
+    {
+      "name": "Problem Solving",
+      "category": "Soft Skill",
+      "aliases": ["Problem-Solving Skills", "Solution Finding"],
+      "related": ["Critical Thinking", "Analytical Skills", "Troubleshooting"]
+    },
+    {
+      "name": "Time Management",
+      "category": "Soft Skill",
+      "aliases": ["Time Organization", "Efficient Time Use"],
+      "related": ["Prioritization", "Scheduling", "Productivity"]
+    },
+    {
+      "name": "Adaptability",
+      "category": "Soft Skill",
+      "aliases": ["Flexibility", "Adaptable"],
+      "related": ["Change Management", "Resilience", "Versatility"]
+    }
+  ]
+} 
