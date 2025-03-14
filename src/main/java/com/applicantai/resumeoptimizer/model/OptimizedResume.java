@@ -10,8 +10,10 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -21,7 +23,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class representing an optimized version of a resume for a specific job description.
+ * Entity class representing an optimized version of a resume.
  */
 @Entity
 @Table(name = "optimized_resumes")
@@ -32,48 +34,46 @@ import lombok.NoArgsConstructor;
 public class OptimizedResume {
     
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "resume_id")
+    @JoinColumn(name = "original_resume_id")
     private Resume originalResume;
     
     @ManyToOne
-    @JoinColumn(name = "job_description_id")
+    @JoinColumn(name = "target_job_description_id")
     private JobDescription targetJobDescription;
     
     @OneToOne
     @JoinColumn(name = "match_result_id")
     private MatchResult matchResult;
     
+    @Lob
     @Column(name = "optimized_content", columnDefinition = "TEXT")
     private String optimizedContent;
     
+    @Column(name = "match_score")
+    private Integer matchScore;
+    
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> changesApplied = new ArrayList<>();
-    
-    @Column(name = "before_score")
-    private int beforeScore;
-    
-    @Column(name = "after_score")
-    private int afterScore;
-    
-    @Column(name = "download_url")
-    private String downloadUrl;
+    private List<String> suggestions = new ArrayList<>();
     
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
     
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
     /**
-     * Adds a change that was applied during optimization.
+     * Adds a suggestion to the optimized resume.
      *
-     * @param change Description of the change
+     * @param suggestion The suggestion to add
      */
-    public void addChange(String change) {
-        this.changesApplied.add(change);
+    public void addSuggestion(String suggestion) {
+        if (suggestions == null) {
+            suggestions = new ArrayList<>();
+        }
+        suggestions.add(suggestion);
     }
 } 

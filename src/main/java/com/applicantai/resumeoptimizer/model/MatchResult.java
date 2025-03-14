@@ -3,8 +3,10 @@ package com.applicantai.resumeoptimizer.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -12,10 +14,13 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,8 +38,8 @@ import lombok.NoArgsConstructor;
 public class MatchResult {
     
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
     @ManyToOne
     @JoinColumn(name = "resume_id")
@@ -45,53 +50,53 @@ public class MatchResult {
     private JobDescription jobDescription;
     
     @Column(name = "overall_match_score")
-    private int overallMatchScore;
+    private Integer overallMatchScore;
     
     @Column(name = "skill_match_score")
-    private int skillMatchScore;
+    private Integer skillMatchScore;
     
     @Column(name = "experience_match_score")
-    private int experienceMatchScore;
+    private Integer experienceMatchScore;
     
     @Column(name = "education_match_score")
-    private int educationMatchScore;
+    private Integer educationMatchScore;
     
-    @Column(name = "cultural_fit_score")
-    private int culturalFitScore;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
     
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Map<String, Integer> matchedSkills = new HashMap<>();
+    @Transient
+    private Set<Skill> matchedSkills = new HashSet<>();
     
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Map<String, Integer> missingSkills = new HashMap<>();
+    @Transient
+    private Set<Skill> missingSkills = new HashSet<>();
+    
+    @Transient
+    private Map<String, Integer> matchedSkillScores = new HashMap<>();
     
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> recommendations = new ArrayList<>();
-    
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
     
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
     /**
-     * Adds a matched skill with its relevance score.
+     * Adds a matched skill to the result.
      *
-     * @param skillName The skill name
-     * @param relevanceScore The relevance score (0-100)
+     * @param skill The skill to add
+     * @param score The match score for the skill
      */
-    public void addMatchedSkill(String skillName, int relevanceScore) {
-        this.matchedSkills.put(skillName, relevanceScore);
+    public void addMatchedSkill(Skill skill, int score) {
+        matchedSkills.add(skill);
+        matchedSkillScores.put(skill.getName(), score);
     }
     
     /**
-     * Adds a missing skill with its importance score.
+     * Adds a missing skill to the result.
      *
-     * @param skillName The skill name
-     * @param importanceScore The importance score (0-100)
+     * @param skill The missing skill
      */
-    public void addMissingSkill(String skillName, int importanceScore) {
-        this.missingSkills.put(skillName, importanceScore);
+    public void addMissingSkill(Skill skill) {
+        missingSkills.add(skill);
     }
     
     /**

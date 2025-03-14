@@ -156,24 +156,61 @@ public class NlpAnalysisService {
     @PostConstruct
     public void init() {
         try {
-            // Initialize OpenNLP models
-            logger.info("Initializing NLP models from: {}", nlpModelsPath);
+            logger.info("Initializing NLP models from path: {}", nlpModelsPath);
             
-            // For demonstration purposes, we'll use a simplified initialization
-            // In a production environment, you would load actual models
+            // Try to load models
+            try {
+                sentenceDetector = new SentenceDetectorME(loadModel("en-sent.bin", SentenceModel.class));
+                logger.info("Sentence detector model loaded successfully");
+            } catch (Exception e) {
+                logger.warn("Failed to load sentence detector model: {}", e.getMessage());
+                logger.info("Will use pattern-based sentence detection as fallback");
+            }
             
-            // Placeholder for model initialization
-            // sentenceDetector = new SentenceDetectorME(loadModel("en-sent.bin", SentenceModel.class));
-            // tokenizer = new TokenizerME(loadModel("en-token.bin", TokenizerModel.class));
-            // posTagger = new POSTaggerME(loadModel("en-pos-maxent.bin", POSModel.class));
-            // personNameFinder = new NameFinderME(loadModel("en-ner-person.bin", TokenNameFinderModel.class));
-            // organizationNameFinder = new NameFinderME(loadModel("en-ner-organization.bin", TokenNameFinderModel.class));
-            // locationNameFinder = new NameFinderME(loadModel("en-ner-location.bin", TokenNameFinderModel.class));
+            try {
+                tokenizer = new TokenizerME(loadModel("en-token.bin", TokenizerModel.class));
+                logger.info("Tokenizer model loaded successfully");
+            } catch (Exception e) {
+                logger.warn("Failed to load tokenizer model: {}", e.getMessage());
+                logger.info("Will use simple whitespace tokenization as fallback");
+            }
             
-            logger.info("NLP models initialized successfully");
+            try {
+                posTagger = new POSTaggerME(loadModel("en-pos-maxent.bin", POSModel.class));
+                logger.info("POS tagger model loaded successfully");
+            } catch (Exception e) {
+                logger.warn("Failed to load POS tagger model: {}", e.getMessage());
+                logger.info("POS tagging will be skipped");
+            }
+            
+            try {
+                personNameFinder = new NameFinderME(loadModel("en-ner-person.bin", TokenNameFinderModel.class));
+                logger.info("Person name finder model loaded successfully");
+            } catch (Exception e) {
+                logger.warn("Failed to load person name finder model: {}", e.getMessage());
+                logger.info("Will use pattern-based person name detection as fallback");
+            }
+            
+            try {
+                organizationNameFinder = new NameFinderME(loadModel("en-ner-organization.bin", TokenNameFinderModel.class));
+                logger.info("Organization name finder model loaded successfully");
+            } catch (Exception e) {
+                logger.warn("Failed to load organization name finder model: {}", e.getMessage());
+                logger.info("Will use pattern-based organization detection as fallback");
+            }
+            
+            try {
+                locationNameFinder = new NameFinderME(loadModel("en-ner-location.bin", TokenNameFinderModel.class));
+                logger.info("Location name finder model loaded successfully");
+            } catch (Exception e) {
+                logger.warn("Failed to load location name finder model: {}", e.getMessage());
+                logger.info("Will use pattern-based location detection as fallback");
+            }
+            
+            logger.info("NLP models initialization completed");
         } catch (Exception e) {
-            logger.error("Failed to initialize NLP models", e);
-            // Continue without models, we'll use pattern matching as fallback
+            logger.error("Error initializing NLP models: {}", e.getMessage());
+            logger.info("Will use pattern-based analysis as fallback");
         }
     }
     
@@ -184,7 +221,7 @@ public class NlpAnalysisService {
      * @return NlpAnalysisResult containing the analysis results
      */
     public NlpAnalysisResult analyzeText(String text) {
-        logger.debug("Analyzing text of length: {}", text.length());
+        logger.debug("Analyzing text with NLP: {} characters", text.length());
         
         NlpAnalysisResult result = new NlpAnalysisResult();
         
@@ -200,8 +237,10 @@ public class NlpAnalysisService {
         // Extract attributes
         extractAttributes(text, result);
         
-        logger.debug("Analysis complete. Found {} skills, {} key phrases, {} named entities",
-                result.getIdentifiedSkills().size(), result.getKeyPhrases().size(), result.getNamedEntities().size());
+        logger.debug("NLP analysis completed: {} skills, {} key phrases, {} named entities",
+                result.getIdentifiedSkills().size(),
+                result.getKeyPhrases().size(),
+                result.getNamedEntities().size());
         
         return result;
     }
@@ -213,6 +252,8 @@ public class NlpAnalysisService {
      * @param result The result object to populate
      */
     private void extractSkills(String text, NlpAnalysisResult result) {
+        logger.debug("Extracting skills from text");
+        
         // Extract programming languages
         extractSkillsByPattern(text, PROGRAMMING_LANGUAGES_PATTERN, "Programming Language", result);
         
@@ -223,10 +264,19 @@ public class NlpAnalysisService {
         extractSkillsByPattern(text, DATABASES_PATTERN, "Database", result);
         
         // Extract cloud technologies
-        extractSkillsByPattern(text, CLOUD_PATTERN, "Cloud", result);
+        extractSkillsByPattern(text, CLOUD_PATTERN, "Cloud Technology", result);
         
         // Extract soft skills
         extractSkillsByPattern(text, SOFT_SKILLS_PATTERN, "Soft Skill", result);
+        
+        // Special case for "Spring Boot" which might be missed by the regex
+        if (text.toLowerCase().contains("spring boot")) {
+            Skill springBootSkill = new Skill();
+            springBootSkill.setName("Spring Boot");
+            springBootSkill.setCategory("Framework");
+            springBootSkill.setRelevanceScore(100);
+            result.addSkill(springBootSkill);
+        }
     }
     
     /**
@@ -393,19 +443,35 @@ public class NlpAnalysisService {
      * @throws IOException If the model cannot be loaded
      */
     private <T> T loadModel(String modelName, Class<T> modelClass) throws IOException {
-        Resource resource = resourceLoader.getResource(nlpModelsPath + modelName);
-        try (InputStream modelIn = resource.getInputStream()) {
-            if (modelClass == SentenceModel.class) {
-                return modelClass.cast(new SentenceModel(modelIn));
-            } else if (modelClass == TokenizerModel.class) {
-                return modelClass.cast(new TokenizerModel(modelIn));
-            } else if (modelClass == POSModel.class) {
-                return modelClass.cast(new POSModel(modelIn));
-            } else if (modelClass == TokenNameFinderModel.class) {
-                return modelClass.cast(new TokenNameFinderModel(modelIn));
-            } else {
-                throw new IllegalArgumentException("Unsupported model class: " + modelClass.getName());
+        try {
+            Resource resource = resourceLoader.getResource(nlpModelsPath + modelName);
+            try (InputStream modelIn = resource.getInputStream()) {
+                if (modelClass == SentenceModel.class) {
+                    return modelClass.cast(new SentenceModel(modelIn));
+                } else if (modelClass == TokenizerModel.class) {
+                    return modelClass.cast(new TokenizerModel(modelIn));
+                } else if (modelClass == POSModel.class) {
+                    return modelClass.cast(new POSModel(modelIn));
+                } else if (modelClass == TokenNameFinderModel.class) {
+                    return modelClass.cast(new TokenNameFinderModel(modelIn));
+                } else {
+                    throw new IllegalArgumentException("Unsupported model class: " + modelClass.getName());
+                }
             }
+        } catch (IOException e) {
+            logger.error("Failed to load model {}: {}", modelName, e.getMessage());
+            throw e;
         }
+    }
+
+    // Add fallback methods for when models are not available
+    private String[] detectSentencesFallback(String text) {
+        // Simple sentence detection using periods, question marks, and exclamation points
+        return text.split("[.!?]\\s+");
+    }
+
+    private String[] tokenizeFallback(String text) {
+        // Simple tokenization by whitespace
+        return text.trim().split("\\s+");
     }
 } 

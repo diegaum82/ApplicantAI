@@ -175,8 +175,14 @@ This layer provides ongoing value through:
 - Extracts key skills and experience levels
 - Determines job context and industry
 
+### Word Embedding Service
+- Calculates semantic similarity between words and phrases
+- Identifies synonyms and related terms
+- Enhances skill matching accuracy
+- Supports the Matching & Optimization Service
+
 ### Matching & Optimization Service
-- Compares resumes against job descriptions
+- Compares resumes against job descriptions using semantic similarity
 - Calculates match scores for different criteria
 - Generates recommendations for improvements
 - Creates optimized versions of resumes
@@ -237,6 +243,22 @@ This layer provides ongoing value through:
 └────────────┘    └───────────────┘    └─────────────────┘
 ```
 
+### Semantic Matching Flow
+
+```
+┌──────────┐    ┌───────────┐    ┌─────────────────┐    ┌────────────────┐
+│          │    │           │    │                 │    │                │
+│ Resume   │───▶│ Job Desc. │───▶│ Word Embedding  │───▶│ Semantic       │
+│ Skills   │    │ Skills    │    │ Service         │    │ Similarity     │
+└──────────┘    └───────────┘    └─────────────────┘    └────────┬───────┘
+                                                                 │
+┌────────────┐    ┌───────────────┐    ┌─────────────────────┐   │
+│            │    │               │    │                     │   │
+│ Match      │◀───│ Score         │◀───│ Optimization        │◀──┘
+│ Result     │    │ Calculation   │    │ Suggestions         │
+└────────────┘    └───────────────┘    └─────────────────────┘
+```
+
 ## Technology Stack
 
 ### Backend
@@ -248,235 +270,125 @@ This layer provides ongoing value through:
 ### Data Processing
 - **PDF Processing**: Apache PDFBox
 - **OCR**: Tesseract
-- **NLP**: OpenNLP, DeepLearning4J
-- **Text Analysis**: SpaCy, BERT models
-
-### Data Storage
-- **Primary Database**: PostgreSQL
-- **Caching**: Redis
-- **Document Storage**: MinIO (S3-compatible)
+- **NLP**: OpenNLP, custom word embeddings
+- **Machine Learning**: DeepLearning4J (planned)
 
 ### Frontend
-- **Web Framework**: React
-- **UI Components**: Material-UI
-- **State Management**: Redux
-- **Visualization**: D3.js
+- **View Templates**: Thymeleaf
+- **CSS Framework**: Bootstrap 5
+- **JavaScript**: Vanilla JS, Chart.js for visualizations
+- **Future UI**: React (planned)
 
-### Infrastructure
-- **Containerization**: Docker
-- **Orchestration**: Kubernetes
-- **CI/CD**: GitHub Actions
-- **Monitoring**: Prometheus & Grafana
+### Data Storage
+- **Development Database**: H2
+- **Production Database**: PostgreSQL (planned)
+- **Caching**: Caffeine
+
+### Security
+- **Authentication**: Spring Security
+- **Authorization**: Role-based access control
+- **API Security**: JWT (planned)
+
+## Component Details
+
+### PDF Alchemy Engine (Implemented)
+
+The PDF Alchemy Engine is responsible for extracting text from PDF resumes. It uses a multi-strategy approach:
+
+1. **Direct Extraction**: Uses Apache PDFBox to extract text directly from PDF files
+2. **OCR Fallback**: If direct extraction yields poor results, falls back to Tesseract OCR
+3. **Quality Assessment**: Evaluates the quality of extracted text and provides feedback
+
+Key classes:
+- `PdfProcessingService`: Main service for PDF processing
+- `ResumeContent`: Model for storing extracted content
+- `OcrService`: Service for OCR processing
+
+### NLP Cortex (Implemented)
+
+The NLP Cortex analyzes text content to extract meaningful information:
+
+1. **Skill Extraction**: Identifies technical and soft skills
+2. **Named Entity Recognition**: Extracts organizations, locations, etc.
+3. **Key Phrase Extraction**: Identifies important phrases
+4. **Attribute Detection**: Determines experience level, education, etc.
+
+Key classes:
+- `NlpAnalysisService`: Main service for NLP analysis
+- `JobDescriptionAnalysisService`: Service for analyzing job descriptions
+- `NlpAnalysisResult`: Model for storing analysis results
+
+### Word Embedding Service (Implemented)
+
+The Word Embedding Service provides semantic similarity capabilities:
+
+1. **Similarity Calculation**: Computes similarity between words and phrases
+2. **Synonym Recognition**: Identifies synonyms and related terms
+3. **Skill Matching**: Specialized matching for skills and requirements
+
+Key classes:
+- `WordEmbeddingService`: Interface for word embedding operations
+- `SimpleWordEmbeddingServiceImpl`: Implementation using string similarity and synonyms
+
+### Optimization Matrix (Implemented)
+
+The Optimization Matrix matches resumes with job descriptions and generates suggestions:
+
+1. **Skill Matching**: Matches resume skills with job requirements using semantic similarity
+2. **Score Calculation**: Computes match scores for skills, experience, and education
+3. **Gap Analysis**: Identifies missing skills and experience
+4. **Suggestion Generation**: Creates actionable suggestions for improvement
+
+Key classes:
+- `MatchingService`: Interface for matching operations
+- `MatchingServiceImpl`: Implementation of matching algorithms
+- `MatchResult`: Model for storing match results
+- `OptimizedResume`: Model for storing optimization results
+
+## API Design
+
+The system exposes RESTful APIs for various operations:
+
+### Resume API
+- `POST /api/v1/resume/upload`: Upload and process a resume
+- `GET /api/v1/resume/{id}`: Get resume details
+- `DELETE /api/v1/resume/{id}`: Delete a resume
+
+### Job Description API
+- `POST /api/v1/jobs`: Submit a job description
+- `GET /api/v1/jobs/{id}`: Get job description details
+- `DELETE /api/v1/jobs/{id}`: Delete a job description
+
+### Matching API
+- `POST /api/v1/match`: Match a resume with a job description
+- `GET /api/v1/match/{id}`: Get match results
+- `GET /api/v1/optimize/{id}`: Get optimized resume
 
 ## Security Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Security Architecture                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌────────────────┐   ┌────────────────┐   ┌────────────────┐   │
-│  │                │   │                │   │                │   │
-│  │ Authentication │   │ Authorization  │   │ Data Protection│   │
-│  │ - JWT Tokens   │   │ - Role-Based   │   │ - Encryption   │   │
-│  │ - OAuth 2.0    │   │   Access       │   │ - PII Handling │   │
-│  │ - MFA Support  │   │ - API Security │   │ - GDPR Controls│   │
-│  │                │   │                │   │                │   │
-│  └────────────────┘   └────────────────┘   └────────────────┘   │
-│                                                                 │
-│  ┌────────────────┐   ┌────────────────┐   ┌────────────────┐   │
-│  │                │   │                │   │                │   │
-│  │ Input Validation│  │ Audit Logging  │   │ Rate Limiting  │   │
-│  │ - Sanitization │   │ - User Actions │   │ - API Throttling│  │
-│  │ - Validation   │   │ - System Events│   │ - DoS Protection│  │
-│  │ - XSS Prevention│  │ - Alerts       │   │                │   │
-│  │                │   │                │   │                │   │
-│  └────────────────┘   └────────────────┘   └────────────────┘   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+The system implements a layered security approach:
 
-### Key Security Features
-- JWT-based authentication with secure token handling
-- Role-based access control for all API endpoints
-- Data encryption at rest and in transit
-- PII detection and automatic redaction
-- Comprehensive audit logging
-- Rate limiting and API protection
-
-## Scalability Architecture
-
-The system is designed to scale horizontally with increasing load:
-
-- **Stateless Services**: All services are designed to be stateless for easy scaling
-- **Database Sharding**: Data partitioning for high-volume data
-- **Caching Strategy**: Multi-level caching to reduce database load
-- **Asynchronous Processing**: Long-running tasks handled via message queues
-- **Microservices Isolation**: Services can scale independently based on demand
-
-## Monitoring and Observability
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                  Monitoring & Observability                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌────────────────┐   ┌────────────────┐   ┌────────────────┐   │
-│  │                │   │                │   │                │   │
-│  │  Metrics       │   │  Logging       │   │  Tracing       │   │
-│  │  - Prometheus  │   │  - ELK Stack   │   │  - Jaeger      │   │
-│  │  - Grafana     │   │  - Log         │   │  - Distributed │   │
-│  │  - Alerts      │   │    Aggregation │   │    Request     │   │
-│  │                │   │                │   │    Tracking    │   │
-│  └────────────────┘   └────────────────┘   └────────────────┘   │
-│                                                                 │
-│  ┌────────────────┐   ┌────────────────┐   ┌────────────────┐   │
-│  │                │   │                │   │                │   │
-│  │  Health Checks │   │  Error Tracking│   │  Performance   │   │
-│  │  - Service     │   │  - Centralized │   │  Analysis      │   │
-│  │    Status      │   │    Error       │   │  - Hotspot     │   │
-│  │  - Dependency  │   │    Reporting   │   │    Detection   │   │
-│  │    Monitoring  │   │  - Alerts      │   │  - Optimization│   │
-│  └────────────────┘   └────────────────┘   └────────────────┘   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+1. **Authentication**: Spring Security with form-based authentication
+2. **Authorization**: Role-based access control
+3. **Data Protection**: Encryption of sensitive data
+4. **API Security**: JWT for API authentication (planned)
 
 ## Deployment Architecture
 
-The system will be deployed as a series of containerized services in a Kubernetes cluster:
+The system is designed for cloud deployment:
 
-```
-┌──────────────────────────────────────────────────────┐
-│                 Kubernetes Cluster                    │
-├──────────────────────────────────────────────────────┤
-│                                                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐   │
-│  │ Frontend    │  │ API Gateway │  │ Backend     │   │
-│  │ Pods        │  │ Pods        │  │ Service Pods│   │
-│  └─────────────┘  └─────────────┘  └─────────────┘   │
-│                                                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐   │
-│  │ Database    │  │ Caching     │  │ Message     │   │
-│  │ Instances   │  │ Layer       │  │ Queue       │   │
-│  └─────────────┘  └─────────────┘  └─────────────┘   │
-│                                                      │
-└──────────────────────────────────────────────────────┘
-```
+1. **Development**: Local environment with H2 database
+2. **Testing**: Containerized environment with PostgreSQL
+3. **Production**: Kubernetes cluster with high availability (planned)
 
-## Implementation Status
+## Future Enhancements
 
-### Implemented Components
-
-#### PDF Alchemy Engine (Resume Processing Service)
-
-The PDF Alchemy Engine has been implemented with the following features:
-
-1. **Multiple Text Extraction Strategies**:
-   - Direct text extraction using Apache PDFBox
-   - OCR fallback using Tesseract for image-based PDFs
-   - Quality evaluation metrics
-
-2. **Content Structure Analysis**:
-   - Section detection (Education, Experience, Skills, etc.)
-   - Bullet point extraction
-   - Raw text preservation
-
-3. **Performance Optimization**:
-   - Caffeine caching for repeated processing of the same file
-   - Configurable OCR settings
-
-4. **Error Handling**:
-   - Graceful degradation between extraction methods
-   - Detailed warnings and quality metrics
-
-The implementation includes two service classes:
-- `PdfProcessingService` (primary implementation)
-- `PdfAlchemyEngineImpl` (alternative implementation)
-
-Both implement the `ResumeProcessingService` interface, with `PdfProcessingService` marked as `@Primary` for Spring's dependency injection.
-
-#### Resume Upload Controller
-
-The Resume Upload Controller provides both web and API interfaces for resume uploads:
-
-1. **Web Interface**:
-   - GET `/resume/upload` - Displays the upload form
-   - POST `/resume/upload` - Processes the uploaded file and displays results
-
-2. **API Interface**:
-   - POST `/api/v1/resume/upload` - REST endpoint for programmatic uploads
-
-3. **Features**:
-   - File validation
-   - Error handling
-   - Integration with PDF Alchemy Engine
-
-#### Caching Mechanism
-
-The system implements caching using Spring Boot's cache abstraction with Caffeine as the provider:
-
-1. **Cache Configuration**:
-   - Cache name: `resumeCache`
-   - Cache key: Combination of filename and file size
-   - Implementation: Caffeine in-memory cache
-
-2. **Cached Operations**:
-   - Resume processing (most computationally expensive operation)
-
-3. **Benefits**:
-   - Reduced processing time for duplicate uploads
-   - Lower resource utilization
-   - Improved user experience
-
-#### NLP Cortex (NLP Analysis Module)
-
-The NLP Cortex has been implemented with the following features:
-
-1. **Text Analysis**:
-   - Pattern-based skill extraction
-   - Key phrase identification
-   - Named entity recognition
-   - Attribute extraction
-
-2. **Dictionary Support**:
-   - Comprehensive skill dictionary with categories and aliases
-   - Industry and job level dictionaries
-   - Configurable matching thresholds
-
-3. **Service Components**:
-   - `NlpAnalysisService` - Core NLP functionality
-   - `JobDescriptionAnalysisService` - Job description analysis
-   - `EnhancedResumeProcessingService` - NLP-enhanced resume processing
-
-4. **Configuration**:
-   - Configurable analysis depth
-   - Adjustable confidence thresholds
-   - Dictionary paths
-
-#### Optimization Matrix (Matching Service)
-
-The Optimization Matrix has been implemented with the following features:
-
-1. **Matching Algorithms**:
-   - Skill-based matching
-   - Key phrase matching
-   - Attribute comparison
-
-2. **Optimization Suggestions**:
-   - Missing skill identification
-   - Key phrase recommendations
-   - General resume improvement suggestions
-
-3. **Service Components**:
-   - `MatchingServiceImpl` - Core matching functionality
-   - Support for both entity-based and content-based matching
-
-4. **Scoring System**:
-   - Overall match score calculation
-   - Component-specific scores (skills, experience, etc.)
-   - Weighted scoring based on importance
+1. **Advanced NLP**: Integration with more sophisticated NLP models
+2. **Machine Learning**: Implementation of ML for career prediction
+3. **Real-time Analysis**: Stream processing for real-time resume analysis
+4. **Mobile Support**: Native mobile applications
+5. **Integration**: APIs for third-party integration
 
 ---
 
-This architecture document provides a high-level overview of the ApplicantAI Resume Optimizer system. It will evolve as the project progresses, with more detailed component designs and implementation specifics added over time. 
+*This architecture document will continue to evolve as the project progresses, with more detailed component designs and implementation specifics added over time.* 

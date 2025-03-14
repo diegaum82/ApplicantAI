@@ -1,11 +1,9 @@
 package com.applicantai.resumeoptimizer.service;
 
 import com.applicantai.resumeoptimizer.model.JobDescription;
+import com.applicantai.resumeoptimizer.model.MatchResult;
+import com.applicantai.resumeoptimizer.model.OptimizedResume;
 import com.applicantai.resumeoptimizer.model.Resume;
-import com.applicantai.resumeoptimizer.model.ResumeContent;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Service interface for matching resumes with job descriptions and generating optimization suggestions.
@@ -13,56 +11,37 @@ import java.util.Map;
 public interface MatchingService {
     
     /**
-     * Compares a resume with a job description and returns a match score.
+     * Matches a resume with a job description and calculates match scores.
      *
-     * @param resume The resume to compare
-     * @param jobDescription The job description to compare against
-     * @return A score between 0 and 100 indicating the match quality
+     * @param resume The resume to match
+     * @param jobDescription The job description to match against
+     * @return MatchResult containing match scores and details
      */
-    int calculateMatchScore(Resume resume, JobDescription jobDescription);
+    MatchResult matchResumeWithJob(Resume resume, JobDescription jobDescription);
     
     /**
-     * Compares resume content with a job description and returns a match score.
+     * Matches a resume with a job description using the raw text content.
      *
-     * @param resumeContent The resume content to compare
-     * @param jobDescription The job description to compare against
-     * @return A score between 0 and 100 indicating the match quality
+     * @param resumeContent The raw text content of the resume
+     * @param jobDescriptionContent The raw text content of the job description
+     * @return MatchResult containing match scores and details
      */
-    int calculateMatchScore(ResumeContent resumeContent, String jobDescription);
+    MatchResult matchResumeWithJobText(String resumeContent, String jobDescriptionContent);
     
     /**
-     * Identifies matching skills between a resume and job description.
-     *
-     * @param resume The resume to analyze
-     * @param jobDescription The job description to analyze
-     * @return A map of skill names to relevance scores (0-100)
-     */
-    Map<String, Integer> identifyMatchingSkills(Resume resume, JobDescription jobDescription);
-    
-    /**
-     * Identifies skills that are missing from the resume but required by the job description.
-     *
-     * @param resume The resume to analyze
-     * @param jobDescription The job description to analyze
-     * @return A map of skill names to importance scores (0-100)
-     */
-    Map<String, Integer> identifyMissingSkills(Resume resume, JobDescription jobDescription);
-    
-    /**
-     * Generates optimization suggestions for a resume based on a job description.
+     * Generates an optimized version of the resume based on the job description.
      *
      * @param resume The resume to optimize
-     * @param jobDescription The target job description
-     * @return A list of optimization suggestions
+     * @param jobDescription The job description to optimize for
+     * @return OptimizedResume containing the optimized content and suggestions
      */
-    List<String> generateOptimizationSuggestions(Resume resume, JobDescription jobDescription);
+    OptimizedResume generateOptimizedResume(Resume resume, JobDescription jobDescription);
     
     /**
-     * Generates optimization suggestions for resume content based on a job description.
+     * Generates optimization suggestions for a resume based on a match result.
      *
-     * @param resumeContent The resume content to optimize
-     * @param jobDescription The target job description
-     * @return A list of optimization suggestions
+     * @param matchResult The match result containing match details
+     * @return OptimizedResume containing suggestions for improvement
      */
-    List<String> generateOptimizationSuggestions(ResumeContent resumeContent, String jobDescription);
+    OptimizedResume generateOptimizationSuggestions(MatchResult matchResult);
 } 

@@ -22,6 +22,10 @@ Vision: To create a system that makes traditional resume builders obsolete throu
 - Job description analysis service
 - Resume-job matching service with optimization suggestions
 - Skill and industry dictionaries for entity recognition
+- Semantic similarity for enhanced skill matching
+- Word embedding service for improved matching accuracy
+- Enhanced UI for match results with visualization
+- Categorized optimization suggestions with accordion display
 
 ### 2.2 In Progress
 - Resume section detection refinement
@@ -29,6 +33,7 @@ Vision: To create a system that makes traditional resume builders obsolete throu
 - File validation
 - NLP model integration and training
 - Job description upload UI
+- Advanced word embedding implementation
 
 ### 2.3 Next Priorities
 - UI development for results display
@@ -36,6 +41,7 @@ Vision: To create a system that makes traditional resume builders obsolete throu
 - Job description upload and analysis UI
 - Advanced matching algorithm with semantic understanding
 - Career trajectory prediction
+- Integration of actual word embeddings for improved matching
 
 ## 3. Technical Stack
 - **Framework**: Spring Boot 3.x
@@ -78,12 +84,17 @@ public interface JobDescriptionAnalysisService {
 }
 
 public interface MatchingService {
-    int calculateMatchScore(Resume resume, JobDescription jobDescription);
-    int calculateMatchScore(ResumeContent resumeContent, String jobDescription);
-    Map<String, Integer> identifyMatchingSkills(Resume resume, JobDescription jobDescription);
-    Map<String, Integer> identifyMissingSkills(Resume resume, JobDescription jobDescription);
-    List<String> generateOptimizationSuggestions(Resume resume, JobDescription jobDescription);
-    List<String> generateOptimizationSuggestions(ResumeContent resumeContent, String jobDescription);
+    MatchResult matchResumeWithJob(Resume resume, JobDescription jobDescription);
+    MatchResult matchResumeWithJobText(String resumeContent, String jobDescriptionContent);
+    OptimizedResume generateOptimizedResume(Resume resume, JobDescription jobDescription);
+    OptimizedResume generateOptimizationSuggestions(MatchResult matchResult);
+}
+
+public interface WordEmbeddingService {
+    double calculateSimilarity(String word1, String word2);
+    Map<String, Double> findSimilarWords(String word, List<String> candidates, double threshold);
+    double calculateSkillSimilarity(String skill, String requirement);
+    boolean isReady();
 }
 ```
 
@@ -101,8 +112,9 @@ public interface MatchingService {
 - `GET /resume/upload` - Display resume upload form (Implemented)
 - `POST /resume/upload` - Upload and process a resume (Implemented)
 - `POST /api/v1/resume/upload` - API endpoint for resume upload (Implemented)
+- `POST /api/v1/match` - Compare resume with job description (Implemented)
+- `GET /match` - Display match form (Implemented)
 - `POST /api/v1/jobs` - Submit a job description (Planned)
-- `POST /api/v1/match` - Compare resume with job (Planned)
 - `GET /api/v1/optimize/{id}` - Get optimized resume (Planned)
 
 ## 7. Development Workflow
@@ -119,6 +131,7 @@ public interface MatchingService {
 - Handling various PDF formats and layouts consistently
 - Managing multiple service implementations with Spring dependency injection
 - Improving NLP model accuracy without extensive training data
+- Implementing sophisticated word embeddings for semantic matching
 
 ## 9. References
 - [SYSTEM_MISSION.md](SYSTEM_MISSION.md) - Project vision and architecture
@@ -129,7 +142,8 @@ public interface MatchingService {
 ```
 YYYY-MM-DD: Project initialization, created basic models and configuration
 [Previous Date]: Implemented PDF processing service, resume upload controller, and UI templates
-[Current Date]: Implemented NLP Analysis Module, job description analysis, and resume-job matching
+[Previous Date]: Implemented NLP Analysis Module, job description analysis, and resume-job matching
+[Current Date]: Enhanced matching algorithm with semantic similarity and improved UI for optimization suggestions
 ```
 
 ## PDF Alchemy Engine
@@ -213,12 +227,37 @@ These dictionaries help the system recognize domain-specific terms and their rel
 The Optimization Matrix is the component responsible for comparing resumes with job descriptions and generating optimization suggestions. Key features include:
 
 - **Match Score Calculation**: Computes an overall match score between a resume and job description
-- **Skill Matching**: Identifies matching skills and their relevance
+- **Skill Matching**: Identifies matching skills and their relevance using semantic similarity
 - **Missing Skills Detection**: Identifies skills required by the job but missing from the resume
 - **Optimization Suggestions**: Generates actionable suggestions to improve the resume
 - **Phrase Recommendations**: Suggests key phrases from the job description to include in the resume
+- **Semantic Matching**: Uses word embeddings to find semantically similar skills and phrases
 
-The Optimization Matrix uses the results from the NLP Cortex to provide meaningful insights and suggestions.
+The Optimization Matrix uses the results from the NLP Cortex and Word Embedding Service to provide meaningful insights and suggestions.
+
+### Configuration
+
+The Optimization Matrix can be configured through the `application.properties` file:
+
+```properties
+# Matching Configuration
+app.matching.similarity-threshold=0.7
+app.matching.skill-weight=0.6
+app.matching.experience-weight=0.3
+app.matching.education-weight=0.1
+app.matching.enable-semantic-matching=true
+```
+
+## Word Embedding Service
+
+The Word Embedding Service provides semantic similarity capabilities to the system, enabling more accurate matching between resume skills and job requirements. Key features include:
+
+- **Semantic Similarity**: Calculates similarity between words and phrases
+- **Synonym Recognition**: Identifies synonyms and related terms
+- **Levenshtein Distance**: Uses edit distance to find similar terms
+- **Abbreviation Detection**: Recognizes common abbreviations and their full forms
+
+The current implementation uses a simple approach with predefined synonyms and string similarity algorithms, but it will be replaced with a more sophisticated implementation using actual word embeddings in the future.
 
 ## Resume Upload UI
 
@@ -230,6 +269,17 @@ The system provides a modern, responsive UI for resume uploads with the followin
 - Responsive design for mobile and desktop
 
 The UI is implemented using Thymeleaf templates with Bootstrap for styling and JavaScript for enhanced interactivity.
+
+## Match Results UI
+
+The system provides a comprehensive UI for displaying match results with the following features:
+- Visual representation of match scores using circular progress indicators
+- Detailed breakdown of skill, experience, and education scores
+- Categorized display of matching and missing skills
+- Accordion-based organization of optimization suggestions by category
+- Color-coded indicators for different match quality levels
+
+The UI is designed to be intuitive and actionable, helping users understand how to improve their resumes for specific job descriptions.
 
 ---
 

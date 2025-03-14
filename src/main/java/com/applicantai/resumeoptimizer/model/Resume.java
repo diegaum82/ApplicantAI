@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Transient;
 
 /**
  * Entity class representing a user's resume.
@@ -70,4 +71,7 @@ public class Resume {
 
     @Column(name = "feo_score")
     private Integer feoScore;
+
+    @Transient
+    private String rawContent;
 } 
