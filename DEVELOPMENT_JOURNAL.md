@@ -4,21 +4,21 @@ This journal tracks the development progress, decisions, and learnings throughou
 
 ## Development History
 
-### [Current Date]
+### [Initial Setup Date]
 - Created project structure with Spring Boot
 - Set up initial domain models (Resume, Skill, JobDescription)
 - Established Maven dependencies with required libraries
 - Created SYSTEM_MISSION.md capturing the architectural vision
 - Created PROJECT_CONTEXT.md for project continuity
 
-### [Update Date]
+### [PDF Processing Implementation Date]
 - Added Caffeine cache dependency to improve application performance
 - Implemented ResumeController for handling file uploads and processing
 - Created Thymeleaf templates for the resume upload form
 - Implemented PdfProcessingService with OCR fallback capability
 - Added @Primary annotation to resolve bean conflict between multiple ResumeProcessingService implementations
 
-### [Update Date]
+### [NLP Implementation Date]
 - Implemented NLP Analysis Module for text processing and skill extraction
 - Created JobDescriptionAnalysisService for analyzing job descriptions
 - Implemented MatchingService for comparing resumes with job descriptions
@@ -26,7 +26,7 @@ This journal tracks the development progress, decisions, and learnings throughou
 - Added skill and industry dictionaries for improved entity recognition
 - Configured NLP settings in application.properties
 
-### [Current Date]
+### [Matching Enhancement Date]
 - Enhanced matching algorithm with semantic similarity using word embeddings
 - Created WordEmbeddingService interface and SimpleWordEmbeddingServiceImpl
 - Improved skill matching with synonym recognition and Levenshtein distance
@@ -34,6 +34,15 @@ This journal tracks the development progress, decisions, and learnings throughou
 - Added categorized optimization suggestions with accordion display
 - Updated MatchingController to include detailed score information in the response
 - Added configuration properties for matching algorithm in application.properties
+
+### March 14, 2025
+- Created HomeController to handle the root URL and redirect to the match form
+- Implemented SecurityConfig to configure Spring Security for development
+- Disabled CSRF protection for development purposes
+- Configured security to allow access to all endpoints
+- Fixed "Error: Forbidden" issues when accessing endpoints
+- Updated project documentation to reflect current status and next steps
+- Identified and documented IDE linter errors as a known issue
 
 ## Key Decisions
 
@@ -45,6 +54,7 @@ This journal tracks the development progress, decisions, and learnings throughou
 - **Caching Strategy**: Implemented Caffeine cache for resume processing to improve performance
 - **NLP Approach**: Using pattern matching with dictionaries as a lightweight approach; will integrate with more sophisticated models in the future
 - **Matching Algorithm**: Implemented semantic similarity with word embeddings and synonym recognition
+- **Security Configuration**: Using permissive security settings for development; will implement proper security for production
 
 ### Technical Debt & Constraints
 - Currently using simplified domain models that will need refinement
@@ -54,6 +64,7 @@ This journal tracks the development progress, decisions, and learnings throughou
 - IDE shows linter errors for dependencies that are correctly configured in Maven but not recognized by the IDE
 - NLP models are not yet loaded; currently using pattern matching as a fallback
 - Word embedding service uses a simple implementation; will need to be replaced with a more sophisticated one using actual word embeddings
+- Security configuration is permissive for development; needs to be tightened for production
 
 ## Challenges & Solutions
 
@@ -82,13 +93,23 @@ This journal tracks the development progress, decisions, and learnings throughou
 **Solution Implemented**: Enhanced UI with visualization of match scores and categorized suggestions using accordion display.
 **Status**: Implemented; needs user testing and refinement
 
+### Challenge: Spring Security Configuration
+**Problem**: Default Spring Security configuration blocking access to endpoints with "Error: Forbidden".
+**Solution Implemented**: Created SecurityConfig class with permissive settings for development.
+**Status**: Implemented for development; needs proper configuration for production
+
+### Challenge: IDE Linter Errors
+**Problem**: IDE showing linter errors for Spring imports despite correct Maven configuration.
+**Solution**: Maven build works correctly despite IDE errors; need to fix IDE configuration.
+**Status**: Identified; needs resolution
+
 ## Environment Setup
 
 ### Development Environment
 - Java 17
-- Maven 3.6+
+- Maven 3.8.7
 - H2 Database
-- Spring Boot 3.x
+- Spring Boot 3.2.3
 - Caffeine Cache
 - OpenNLP for natural language processing
 
@@ -111,12 +132,15 @@ This journal tracks the development progress, decisions, and learnings throughou
 5. ✅ Design initial UI templates
 6. ✅ Enhance matching algorithm with semantic similarity
 7. ✅ Improve UI for optimization suggestions
-8. Implement error handling for file uploads
-9. Add validation for uploaded files
-10. Enhance resume section detection
-11. Improve NLP models with training data
-12. Develop job description upload and analysis UI
-13. Implement advanced word embedding service with actual embeddings
+8. ✅ Configure Spring Security for development
+9. ✅ Create home controller for navigation
+10. Fix IDE linter errors
+11. Implement error handling for file uploads
+12. Add validation for uploaded files
+13. Enhance resume section detection
+14. Improve NLP models with training data
+15. Develop job description upload and analysis UI
+16. Implement advanced word embedding service with actual embeddings
 
 ---
 
